@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Grab Trip Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0d0d0d;
+  --surface:#181818;
+  --surface2:#222222;
+  --purple:#7c3aed;
+  --purple-light:#9d6ef0;
+  --purple-soft:#2a1a4a;
+  --purple-mid:#3d2266;
+  --purple-text:#c4a0ff;
+  --green:#16a34a;
+  --green-soft:#0d2b1a;
+  --green-text:#4ade80;
+  --blue:#2563eb;
+  --blue-soft:#0d1e3b;
+  --blue-text:#60a5fa;
+  --red:#ef4444;
+  --red-soft:#2b0d0d;
+  --red-text:#f87171;
+  --orange:#f97316;
+  --orange-soft:#2b1500;
+  --orange-text:#fb923c;
+  --text:#f1f1f1;
+  --text2:#9ca3af;
+  --text3:#6b7280;
+  --border:#2a2a2a;
+  --border2:#333333;
+  --radius:14px;
+  --radius-sm:10px;
+  --radius-xs:8px;
+  --shadow:0 1px 4px rgba(0,0,0,0.4);
+  --shadow-md:0 4px 16px rgba(124,58,237,0.25);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;color:var(--text)}
+.app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg)}
+
+/* ── HEADER ── */
+.header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.header-brand{display:flex;align-items:center;gap:10px}
+.back-btn{width:36px;height:36px;border-radius:9px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--purple-light);font-size:17px;flex-shrink:0;transition:all 0.18s cubic-bezier(0.34,1.4,0.64,1)}
+.back-btn:hover{background:var(--purple-soft);border-color:var(--purple-mid);transform:translateX(-2px)}
+.back-btn:active{background:var(--purple-soft);transform:scale(0.88) translateX(-2px)}
+.brand-icon{width:36px;height:36px;background:var(--purple);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.brand-name{font-size:15px;font-weight:700;color:var(--text);line-height:1.2}
+.brand-sub{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px}
+.header-right{display:flex;align-items:center;gap:8px}
+.icon-btn{width:36px;height:36px;border-radius:9px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--purple-light);font-size:17px;transition:all 0.15s}
+.icon-btn:active{background:var(--purple-soft);transform:scale(0.92)}
+
+/* ── DROPDOWN MENU ── */
+.menu-dropdown-wrap{position:relative}
+.menu-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:6px;min-width:190px;z-index:500;box-shadow:0 12px 40px rgba(0,0,0,0.6);
+  opacity:0;transform:scale(0.88) translateY(-8px);transform-origin:top right;
+  pointer-events:none;transition:opacity 0.22s cubic-bezier(0.34,1.4,0.64,1),transform 0.22s cubic-bezier(0.34,1.4,0.64,1)}
+.menu-dropdown.open{opacity:1;transform:scale(1) translateY(0);pointer-events:auto}
+.menu-item{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:9px;cursor:pointer;transition:background 0.15s;font-size:13px;font-weight:600;color:var(--text2)}
+.menu-item:hover,.menu-item:active{background:var(--purple-soft);color:var(--purple-text)}
+.menu-item-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.mi-home{background:var(--blue-soft);color:var(--blue-text)}
+.mi-rekap{background:var(--green-soft);color:var(--green-text)}
+.mi-edit{background:var(--orange-soft);color:var(--orange-text)}
+.menu-divider{height:1px;background:var(--border);margin:5px 0}
+
+.user-pill{display:flex;align-items:center;gap:8px;background:var(--purple-soft);border:1px solid var(--purple-mid);border-radius:9px;padding:7px 12px;margin:14px 16px 0}
+.user-avatar{width:30px;height:30px;background:var(--purple);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+.user-name{font-size:13px;font-weight:700;color:var(--purple-text)}
+.user-role{font-size:10px;font-weight:600;color:var(--purple-light);text-transform:uppercase;letter-spacing:0.6px}
+
+.sync-status{display:flex;align-items:center;gap:6px;margin:10px 16px 0;padding:7px 12px;border-radius:9px;font-size:12px;font-weight:600;transition:all 0.3s}
+.sync-status.synced{background:var(--green-soft);color:var(--green-text);border:1px solid #14532d}
+.sync-status.syncing{background:#2b2200;color:#fbbf24;border:1px solid #78350f}
+.sync-status.error{background:var(--red-soft);color:var(--red);border:1px solid #7f1d1d}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+.sync-dot.pulse{animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.page{display:none;padding:14px 16px 40px}
+.page.active{display:block}
+
+.sec-label{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin:16px 0 10px 2px;display:flex;align-items:center;gap:6px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.menu-section{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow)}
+.menu-section-header{display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--purple-soft);border-bottom:1px solid var(--purple-mid)}
+.menu-section-icon{width:32px;height:32px;background:var(--purple);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px}
+.menu-section-title{font-size:13px;font-weight:700;color:var(--purple-text)}
+
+.input-item{padding:16px}
+.input-label-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.input-item-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.icon-green{background:var(--green-soft);color:var(--green-text)}
+.icon-blue{background:var(--blue-soft);color:var(--blue-text)}
+.input-item-label{font-size:13px;font-weight:600;color:var(--text)}
+.input-item-desc{font-size:11px;color:var(--text3);font-weight:400;margin-left:auto}
+
+.input-wrap{position:relative;margin-bottom:10px}
+.input-prefix{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:13px;font-weight:600;pointer-events:none}
+.nominal-input{width:100%;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--radius-xs);padding:13px 13px 13px 40px;font-size:18px;font-weight:700;color:var(--text);font-family:'Inter',sans-serif;transition:all 0.2s;-webkit-appearance:none;caret-color:var(--purple-light)}
+.nominal-input::placeholder{font-size:14px;font-weight:400;color:var(--text3)}
+.nominal-input:focus{outline:none;border-color:var(--purple-light);background:#1e1e2e;box-shadow:0 0 0 3px var(--purple-soft)}
+
+.quick-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
+.quick-row::-webkit-scrollbar{display:none}
+.quick-btn{flex-shrink:0;padding:6px 12px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:20px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;white-space:nowrap}
+.quick-btn:active{background:var(--purple-soft);border-color:var(--purple-mid);color:var(--purple-text);transform:scale(0.93)}
+
+.submit-btn{width:100%;padding:13px;border:none;border-radius:var(--radius-xs);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Inter',sans-serif;transition:all 0.18s;position:relative;overflow:hidden;letter-spacing:0.1px}
+.submit-btn:active{transform:scale(0.97)}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed}
+.btn-atas{background:var(--green);color:#fff;box-shadow:0 2px 10px rgba(22,163,74,0.3)}
+.btn-bawah{background:var(--purple);color:#fff;box-shadow:var(--shadow-md)}
+.btn-atas:active{background:#15803d}
+.btn-bawah:active{background:#5b21b6}
+
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.sum-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;box-shadow:var(--shadow)}
+.sum-card.featured{grid-column:1/-1;background:linear-gradient(135deg,#4c1d95,var(--purple));border-color:var(--purple-mid)}
+.sum-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.sum-card.featured .sum-lbl{color:rgba(255,255,255,0.6)}
+.sum-val{font-size:19px;font-weight:800;letter-spacing:-0.5px;color:var(--text)}
+.sum-card.featured .sum-val{color:#fff}
+.sum-val.green{color:var(--green-text)}
+.sum-val.blue{color:var(--blue-text)}
+.sum-sub{font-size:11px;color:var(--text3);margin-top:3px;font-weight:500}
+.sum-card.featured .sum-sub{color:rgba(255,255,255,0.55)}
+
+.filter-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.filter-header{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.filter-header-icon{width:28px;height:28px;background:var(--purple-soft);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--purple-light);font-size:14px}
+.filter-header-text{font-size:13px;font-weight:700;color:var(--text)}
+.filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.filter-group{display:flex;flex-direction:column;gap:5px}
+.filter-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.7px}
+.filter-input{background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--radius-xs);padding:9px 11px;font-size:13px;font-weight:500;color:var(--text);font-family:'Inter',sans-serif;-webkit-appearance:none;transition:border 0.2s;color-scheme:dark}
+.filter-input:focus{outline:none;border-color:var(--purple-light);box-shadow:0 0 0 3px var(--purple-soft)}
+.filter-full{grid-column:1/-1}
+select.filter-input{cursor:pointer}
+.tampilkan-btn{width:100%;padding:12px;background:var(--purple);color:#fff;border:none;border-radius:var(--radius-xs);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Inter',sans-serif;transition:background 0.18s;box-shadow:var(--shadow-md)}
+.tampilkan-btn:active{background:#5b21b6}
+
+/* ── TRIP ITEM ── */
+.trip-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:11px;box-shadow:var(--shadow)}
+.trip-num{font-size:11px;font-weight:700;color:var(--text3);min-width:18px;text-align:right}
+.trip-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.ti-atas{background:var(--green-soft);color:var(--green-text)}
+.ti-bawah{background:var(--purple-soft);color:var(--purple-text)}
+.trip-info{flex:1;min-width:0}
+.trip-type-name{font-size:13px;font-weight:600;color:var(--text)}
+.trip-time{font-size:11px;color:var(--text3);margin-top:2px;font-weight:400}
+.trip-amt{font-size:14px;font-weight:700;color:var(--text)}
+.badge-atas{display:inline-block;background:var(--green-soft);color:var(--green-text);font-size:10px;font-weight:700;border-radius:4px;padding:1px 6px;margin-left:6px;letter-spacing:0.3px;vertical-align:middle}
+.badge-bawah{display:inline-block;background:var(--purple-soft);color:var(--purple-text);font-size:10px;font-weight:700;border-radius:4px;padding:1px 6px;margin-left:6px;letter-spacing:0.3px;vertical-align:middle}
+
+/* ── ACTION BUTTONS (edit & delete) ── */
+.trip-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.action-btn{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;font-size:14px;transition:all 0.18s;flex-shrink:0}
+.action-btn:active{transform:scale(0.88)}
+.btn-edit{background:var(--blue-soft);color:var(--blue-text);border:1px solid rgba(96,165,250,0.2)}
+.btn-edit:hover{background:#1a3a6b;border-color:var(--blue-text)}
+.btn-delete{background:var(--red-soft);color:var(--red-text);border:1px solid rgba(248,113,113,0.2)}
+.btn-delete:hover{background:#4a1515;border-color:var(--red-text)}
+
+.empty-state{text-align:center;padding:44px 20px}
+.empty-icon{width:56px;height:56px;background:var(--surface2);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px;color:var(--text3)}
+.empty-title{font-size:14px;font-weight:700;color:var(--text2);margin-bottom:4px}
+.empty-sub{font-size:12px;color:var(--text3)}
+
+/* ── MODAL SUCCESS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:opacity 0.22s;backdrop-filter:blur(6px)}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal-box{background:var(--surface);border-radius:20px;padding:28px 24px;text-align:center;max-width:290px;width:90%;transform:scale(0.88) translateY(10px);transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);border:1px solid var(--border2);box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.modal-overlay.show .modal-box{transform:scale(1) translateY(0)}
+.modal-check{width:60px;height:60px;background:var(--green-soft);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px;color:var(--green-text)}
+.modal-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px}
+.modal-pill{display:inline-flex;align-items:center;gap:5px;background:var(--purple-soft);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--purple-text)}
+.modal-nominal{font-size:22px;font-weight:800;color:var(--green-text);margin-top:8px;letter-spacing:-0.5px}
+
+/* ── MODAL EDIT ── */
+.modal-edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:flex-end;justify-content:center;z-index:998;opacity:0;pointer-events:none;transition:opacity 0.25s;backdrop-filter:blur(8px)}
+.modal-edit-overlay.show{opacity:1;pointer-events:auto}
+.modal-edit-box{background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 36px;width:100%;max-width:430px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.34,1.2,0.64,1);border-top:1px solid var(--border2);box-shadow:0 -8px 40px rgba(0,0,0,0.5)}
+.modal-edit-overlay.show .modal-edit-box{transform:translateY(0)}
+.modal-edit-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px}
+.modal-edit-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.modal-edit-sub{font-size:12px;color:var(--text3);margin-bottom:18px}
+.modal-edit-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:8px}
+.modal-edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.btn-cancel{padding:13px;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-xs);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s}
+.btn-cancel:active{background:var(--border2)}
+.btn-save{padding:13px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-xs);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;box-shadow:0 2px 10px rgba(37,99,235,0.3)}
+.btn-save:active{background:#1d4ed8}
+
+/* ── MODAL CONFIRM DELETE ── */
+.modal-confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity 0.22s;backdrop-filter:blur(8px)}
+.modal-confirm-overlay.show{opacity:1;pointer-events:auto}
+.modal-confirm-box{background:var(--surface);border-radius:20px;padding:26px 22px;text-align:center;max-width:300px;width:92%;transform:scale(0.88) translateY(8px);transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);border:1px solid var(--border2);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.modal-confirm-overlay.show .modal-confirm-box{transform:scale(1) translateY(0)}
+.modal-confirm-icon{width:56px;height:56px;background:var(--red-soft);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;color:var(--red-text)}
+.modal-confirm-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+.modal-confirm-sub{font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.5}
+.modal-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-confirm-del{padding:12px;background:var(--red);color:#fff;border:none;border-radius:var(--radius-xs);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s}
+.btn-confirm-del:active{background:#b91c1c}
+
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.2);transform:scale(0);animation:rip 0.5s linear;pointer-events:none}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+
+.list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.list-count-badge{background:var(--purple-soft);color:var(--purple-text);font-size:11px;font-weight:700;border-radius:20px;padding:3px 10px}
+
+/* ── TOAST ── */
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);z-index:2000;background:#1a1a1a;border:1px solid var(--purple-mid);color:var(--purple-text);font-size:13px;font-weight:600;padding:10px 18px;border-radius:30px;box-shadow:0 6px 24px rgba(0,0,0,0.5);transition:transform 0.3s cubic-bezier(0.34,1.4,0.64,1),opacity 0.3s;opacity:0;white-space:nowrap;display:flex;align-items:center;gap:8px;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast-cd{font-size:12px;background:var(--purple-soft);border-radius:10px;padding:1px 7px;color:var(--purple-light)}
+.toast-action{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(30px);z-index:2001;background:#1a1a1a;border:1px solid var(--border2);font-size:13px;font-weight:600;padding:11px 20px;border-radius:30px;box-shadow:0 6px 24px rgba(0,0,0,0.5);transition:transform 0.3s cubic-bezier(0.34,1.4,0.64,1),opacity 0.3s;opacity:0;white-space:nowrap;display:flex;align-items:center;gap:8px;pointer-events:none}
+.toast-action.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast-action.success{border-color:#14532d;color:var(--green-text)}
+.toast-action.danger{border-color:#7f1d1d;color:var(--red-text)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header" id="header">
+    <div class="header-brand" id="headerBrand">
+      <div class="brand-icon"><i class="ti ti-car"></i></div>
+      <div>
+        <div class="brand-name">Trip Tracker</div>
+        <div class="brand-sub">Grab Driver</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="menu-dropdown-wrap">
+        <button class="icon-btn" id="menuToggleBtn" onclick="toggleMenu()" title="Menu">
+          <i class="ti ti-dots-vertical"></i>
+        </button>
+        <div class="menu-dropdown" id="mainMenu">
+          <div class="menu-item" onclick="navigateTo('home')">
+            <div class="menu-item-icon mi-home"><i class="ti ti-home"></i></div>
+            Dashboard Utama
+          </div>
+          <div class="menu-divider"></div>
+          <div class="menu-item" onclick="navigateTo('rekap')">
+            <div class="menu-item-icon mi-rekap"><i class="ti ti-chart-bar"></i></div>
+            Rekap Trip
+          </div>
+          <div class="menu-divider"></div>
+          <div class="menu-item" onclick="navigateTo('edit')">
+            <div class="menu-item-icon mi-edit"><i class="ti ti-edit"></i></div>
+            Edit Trip
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div class="page active" id="homePage">
+    <div class="user-pill">
+      <div class="user-avatar"><i class="ti ti-user" style="font-size:15px"></i></div>
+      <div>
+        <div class="user-name">Hai, Kristanto!</div>
+        <div class="user-role">Grab Driver</div>
+      </div>
+    </div>
+    <div class="sync-status synced" id="syncStatus">
+      <div class="sync-dot" id="syncDot"></div>
+      <span id="syncText">Terhubung ke Firestore</span>
+    </div>
+    <div class="sec-label"><i class="ti ti-plus" style="font-size:12px;color:var(--purple-light)"></i> Catat Trip Baru</div>
+    <!-- GRAB ATAS -->
+    <div class="menu-section">
+      <div class="menu-section-header">
+        <div class="menu-section-icon"><i class="ti ti-trending-up"></i></div>
+        <div><div class="menu-section-title">Grab Atas</div></div>
+        <div style="margin-left:auto;font-size:11px;color:#4ade80;font-weight:600;background:#0d2b1a;border-radius:6px;padding:3px 8px;border:1px solid #14532d">ONLINE</div>
+      </div>
+      <div class="input-item">
+        <div class="input-label-row">
+          <div class="input-item-icon icon-green"><i class="ti ti-cash"></i></div>
+          <div class="input-item-label">Nominal Trip</div>
+          <div class="input-item-desc">Dari aplikasi Grab</div>
+        </div>
+        <div class="input-wrap">
+          <span class="input-prefix">Rp</span>
+          <input class="nominal-input" id="inputAtas" type="tel" inputmode="numeric" placeholder="Masukkan nominal..." maxlength="13" oninput="formatInput(this)" onfocus="this.select()">
+        </div>
+        <div class="quick-row">
+          <button class="quick-btn" onclick="addQuick('inputAtas',10000)">+10K</button>
+          <button class="quick-btn" onclick="addQuick('inputAtas',20000)">+20K</button>
+          <button class="quick-btn" onclick="addQuick('inputAtas',30000)">+30K</button>
+          <button class="quick-btn" onclick="addQuick('inputAtas',50000)">+50K</button>
+          <button class="quick-btn" onclick="addQuick('inputAtas',100000)">+100K</button>
+        </div>
+        <button class="submit-btn btn-atas" id="btnAtas" onclick="submitTrip('grab_atas',event)">
+          <i class="ti ti-check" style="font-size:16px"></i> Catat Grab Atas
+        </button>
+      </div>
+    </div>
+    <!-- GRAB BAWAH -->
+    <div class="menu-section">
+      <div class="menu-section-header">
+        <div class="menu-section-icon"><i class="ti ti-trending-down"></i></div>
+        <div><div class="menu-section-title">Grab Bawah</div></div>
+        <div style="margin-left:auto;font-size:11px;color:#4ade80;font-weight:600;background:#0d2b1a;border-radius:6px;padding:3px 8px;border:1px solid #14532d">ONLINE</div>
+      </div>
+      <div class="input-item">
+        <div class="input-label-row">
+          <div class="input-item-icon icon-blue"><i class="ti ti-cash"></i></div>
+          <div class="input-item-label">Nominal Trip</div>
+          <div class="input-item-desc">Diluar aplikasi Grab</div>
+        </div>
+        <div class="input-wrap">
+          <span class="input-prefix">Rp</span>
+          <input class="nominal-input" id="inputBawah" type="tel" inputmode="numeric" placeholder="Masukkan nominal..." maxlength="13" oninput="formatInput(this)" onfocus="this.select()">
+        </div>
+        <div class="quick-row">
+          <button class="quick-btn" onclick="addQuick('inputBawah',10000)">+10K</button>
+          <button class="quick-btn" onclick="addQuick('inputBawah',20000)">+20K</button>
+          <button class="quick-btn" onclick="addQuick('inputBawah',30000)">+30K</button>
+          <button class="quick-btn" onclick="addQuick('inputBawah',50000)">+50K</button>
+          <button class="quick-btn" onclick="addQuick('inputBawah',100000)">+100K</button>
+        </div>
+        <button class="submit-btn btn-bawah" id="btnBawah" onclick="submitTrip('grab_bawah',event)">
+          <i class="ti ti-check" style="font-size:16px"></i> Catat Grab Bawah
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REKAP PAGE -->
+  <div class="page" id="rekapPage">
+    <div class="sec-label"><i class="ti ti-wallet" style="font-size:12px;color:var(--purple-light)"></i> Ringkasan</div>
+    <div class="sum-grid">
+      <div class="sum-card featured">
+        <div class="sum-lbl"><i class="ti ti-wallet" style="font-size:11px"></i> Total Pendapatan</div>
+        <div class="sum-val" id="sumPendapatan">Rp 0</div>
+        <div class="sum-sub" id="sumTotalCount">0 trip tercatat</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-lbl"><i class="ti ti-trending-up" style="font-size:11px;color:var(--green-text)"></i> Grab Atas</div>
+        <div class="sum-val green" id="sumAtas">Rp 0</div>
+        <div class="sum-sub" id="sumAtasCount">0 trip</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-lbl"><i class="ti ti-trending-down" style="font-size:11px;color:var(--purple-light)"></i> Grab Bawah</div>
+        <div class="sum-val blue" id="sumBawah">Rp 0</div>
+        <div class="sum-sub" id="sumBawahCount">0 trip</div>
+      </div>
+    </div>
+    <div class="sec-label"><i class="ti ti-filter" style="font-size:12px;color:var(--purple-light)"></i> Filter Data</div>
+    <div class="filter-card">
+      <div class="filter-header">
+        <div class="filter-header-icon"><i class="ti ti-calendar"></i></div>
+        <div class="filter-header-text">Pilih Rentang Tanggal</div>
+      </div>
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label class="filter-label">Dari Tanggal</label>
+          <input type="date" class="filter-input" id="filterDari">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Sampai</label>
+          <input type="date" class="filter-input" id="filterSampai">
+        </div>
+        <div class="filter-group filter-full">
+          <label class="filter-label">Jenis Trip</label>
+          <select class="filter-input" id="filterJenis">
+            <option value="semua">Semua Trip</option>
+            <option value="grab_atas">Grab Atas</option>
+            <option value="grab_bawah">Grab Bawah</option>
+          </select>
+        </div>
+      </div>
+      <button class="tampilkan-btn" onclick="tampilkanData()">
+        <i class="ti ti-search" style="font-size:15px"></i> Tampilkan Data
+      </button>
+    </div>
+    <div class="list-header">
+      <div class="sec-label" style="margin:0"><i class="ti ti-list" style="font-size:12px;color:var(--purple-light)"></i> Riwayat Trip</div>
+      <div class="list-count-badge" id="listCount" style="display:none"></div>
+    </div>
+    <div id="tripList" style="margin-top:10px"></div>
+  </div>
+
+  <!-- EDIT PAGE -->
+  <div class="page" id="editPage">
+    <div class="sec-label"><i class="ti ti-filter" style="font-size:12px;color:var(--orange-text)"></i> Filter Tanggal</div>
+    <div class="filter-card">
+      <div class="filter-header">
+        <div class="filter-header-icon" style="background:var(--orange-soft);color:var(--orange-text)"><i class="ti ti-calendar"></i></div>
+        <div class="filter-header-text">Pilih Rentang Tanggal</div>
+      </div>
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label class="filter-label">Dari Tanggal</label>
+          <input type="date" class="filter-input" id="editFilterDari">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Sampai</label>
+          <input type="date" class="filter-input" id="editFilterSampai">
+        </div>
+      </div>
+      <button class="tampilkan-btn" style="background:var(--orange);box-shadow:0 2px 12px rgba(249,115,22,0.3)" onclick="tampilkanDataEdit()">
+        <i class="ti ti-search" style="font-size:15px"></i> Tampilkan
+      </button>
+    </div>
+    <div class="list-header">
+      <div class="sec-label" style="margin:0"><i class="ti ti-pencil" style="font-size:12px;color:var(--orange-text)"></i> Riwayat Trip</div>
+      <div class="list-count-badge" id="editListCount" style="display:none"></div>
+    </div>
+    <div id="editTripList" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<!-- TOAST COOLDOWN -->
+<div class="toast" id="toastCooldown">
+  <i class="ti ti-clock" style="font-size:14px"></i>
+  Mohon Tunggu <span class="toast-cd" id="toastCdNum">5s</span>
+</div>
+
+<!-- TOAST ACTION -->
+<div class="toast-action" id="toastAction">
+  <i class="ti ti-check" id="toastActionIcon" style="font-size:14px"></i>
+  <span id="toastActionText"></span>
+</div>
+
+<!-- MODAL SUCCESS -->
+<div class="modal-overlay" id="modalSuccess">
+  <div class="modal-box">
+    <div class="modal-check"><i class="ti ti-check"></i></div>
+    <div class="modal-title">Transaksi Berhasil!</div>
+    <div class="modal-pill"><i class="ti ti-tag" style="font-size:12px"></i> <span id="modalType"></span></div>
+    <div class="modal-nominal" id="modalNominal"></div>
+  </div>
+</div>
+
+<!-- MODAL EDIT NOMINAL -->
+<div class="modal-edit-overlay" id="modalEdit">
+  <div class="modal-edit-box">
+    <div class="modal-edit-handle"></div>
+    <div class="modal-edit-title">Edit Nominal Trip</div>
+    <div class="modal-edit-sub" id="editTripMeta">Grab Atas · —</div>
+    <div class="modal-edit-label">Nominal Baru</div>
+    <div class="input-wrap" style="margin-bottom:0">
+      <span class="input-prefix">Rp</span>
+      <input class="nominal-input" id="editNominalInput" type="tel" inputmode="numeric" placeholder="Masukkan nominal baru..." maxlength="13" oninput="formatInput(this)" onfocus="this.select()">
+    </div>
+    <div class="modal-edit-actions">
+      <button class="btn-cancel" onclick="closeEditModal()">Batal</button>
+      <button class="btn-save" onclick="saveEdit()"><i class="ti ti-device-floppy" style="font-size:14px"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRM DELETE -->
+<div class="modal-confirm-overlay" id="modalConfirmDel">
+  <div class="modal-confirm-box">
+    <div class="modal-confirm-icon"><i class="ti ti-trash"></i></div>
+    <div class="modal-confirm-title">Hapus Trip?</div>
+    <div class="modal-confirm-sub" id="delTripMeta">Trip ini akan dihapus permanen dari database dan tidak bisa dikembalikan.</div>
+    <div class="modal-confirm-actions">
+      <button class="btn-cancel" onclick="closeDeleteModal()">Batal</button>
+      <button class="btn-confirm-del" onclick="confirmDelete()"><i class="ti ti-trash" style="font-size:14px"></i> Hapus</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCl56XtlxgTBiJ507-C-mcVuRHIEd3Xc6U",
+  authDomain: "data-grab-fb660.firebaseapp.com",
+  projectId: "data-grab-fb660",
+  storageBucket: "data-grab-fb660.firebasestorage.app",
+  messagingSenderId: "877013906671",
+  appId: "1:877013906671:web:9309ef71da93498ad2d71a",
+  measurementId: "G-4KWY2GQ1RN"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const tripsRef = collection(db, 'trips');
+
+// ── Helpers ──────────────────────────────────────────────
+function formatRupiah(n){return 'Rp '+n.toLocaleString('id-ID')}
+function parseAngka(s){return parseInt((s||'').replace(/\./g,''))||0}
+function formatInput(el){
+  let raw=el.value.replace(/\D/g,'');
+  if(!raw){el.value='';return}
+  el.value=parseInt(raw).toLocaleString('id-ID');
+}
+function addQuick(id, val){
+  const el=document.getElementById(id);
+  const current=parseAngka(el.value);
+  el.value=(current+val).toLocaleString('id-ID');
+  el.focus();
+}
+function ripple(btn,e){
+  const r=document.createElement('span');
+  r.className='ripple';
+  const rect=btn.getBoundingClientRect();
+  const size=Math.max(rect.width,rect.height)*2;
+  r.style.cssText=`width:${size}px;height:${size}px;left:${(e.clientX-rect.left)-size/2}px;top:${(e.clientY-rect.top)-size/2}px`;
+  btn.appendChild(r);
+  setTimeout(()=>r.remove(),600);
+}
+function nowWIB(){ return new Date(Date.now() + 7*60*60*1000); }
+function todayStr(){
+  const n=nowWIB();
+  return `${n.getUTCFullYear()}-${String(n.getUTCMonth()+1).padStart(2,'0')}-${String(n.getUTCDate()).padStart(2,'0')}`;
+}
+function wibStartTs(dateStr){ return Timestamp.fromDate(new Date(dateStr+'T00:00:00+07:00')); }
+function wibEndTs(dateStr){ return Timestamp.fromDate(new Date(dateStr+'T23:59:59+07:00')); }
+
+// ── Sync status ──────────────────────────────────────────
+function setSyncStatus(state, text){
+  const el=document.getElementById('syncStatus');
+  const dot=document.getElementById('syncDot');
+  const txt=document.getElementById('syncText');
+  el.className='sync-status '+state;
+  dot.className='sync-dot'+(state==='syncing'?' pulse':'');
+  txt.textContent=text;
+}
+
+// ── Submit → Firestore ────────────────────────────────────
+async function submitTrip(type, e){
+  ripple(e.currentTarget, e);
+  const inputId=type==='grab_atas'?'inputAtas':'inputBawah';
+  const el=document.getElementById(inputId);
+  const nominal=parseAngka(el.value);
+  if(!nominal||nominal<=0){
+    el.style.borderColor='#ef4444';
+    el.style.boxShadow='0 0 0 3px rgba(239,68,68,0.15)';
+    setTimeout(()=>{el.style.borderColor='';el.style.boxShadow=''},1500);
+    el.focus();return;
+  }
+  const btn=document.getElementById(type==='grab_atas'?'btnAtas':'btnBawah');
+  btn.disabled=true;
+  setSyncStatus('syncing','Menyimpan data...');
+  try {
+    await addDoc(tripsRef,{ tripType: type, nominal: nominal, createdAt: Timestamp.now() });
+    el.value='';
+    lastFetchData=null; lastFetchKey=null; cooldownUntil=0;
+    showModal(type, nominal);
+    setSyncStatus('synced','Tersimpan ke Firestore');
+  } catch(err){
+    setSyncStatus('error','Gagal simpan: '+err.message);
+    alert('Gagal menyimpan: '+err.message);
+  } finally { btn.disabled=false; }
+}
+
+// ── Modal success ─────────────────────────────────────────
+function showModal(type, nominal){
+  document.getElementById('modalType').textContent=type==='grab_atas'?'Grab Atas':'Grab Bawah';
+  document.getElementById('modalNominal').textContent=formatRupiah(nominal);
+  const o=document.getElementById('modalSuccess');
+  o.classList.add('show');
+  setTimeout(()=>o.classList.remove('show'),2200);
+}
+
+// ── Toast action ─────────────────────────────────────────
+let toastActTimeout=null;
+function showToastAction(msg, type='success'){
+  const el=document.getElementById('toastAction');
+  const ic=document.getElementById('toastActionIcon');
+  const tx=document.getElementById('toastActionText');
+  el.className='toast-action '+type;
+  ic.className='ti '+(type==='success'?'ti-check':'ti-trash')+' ';
+  ic.style.fontSize='14px';
+  tx.textContent=msg;
+  el.classList.add('show');
+  if(toastActTimeout) clearTimeout(toastActTimeout);
+  toastActTimeout=setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ── Navigation ────────────────────────────────────────────
+function navigateTo(page){
+  closeMenu();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pages={home:'homePage',rekap:'rekapPage',edit:'editPage'};
+  document.getElementById(pages[page]).classList.add('active');
+  const brand=document.getElementById('headerBrand');
+  if(page==='home'){
+    brand.innerHTML=`<div class="brand-icon"><i class="ti ti-car"></i></div>
+      <div><div class="brand-name">Trip Tracker</div><div class="brand-sub">Grab Driver</div></div>`;
+  } else if(page==='rekap'){
+    brand.innerHTML=`<button class="back-btn" onclick="navigateTo('home')" title="Kembali ke Dashboard"><i class="ti ti-arrow-left"></i></button><div><div class="brand-name">Rekap Trip</div><div class="brand-sub">Riwayat Pendapatan</div></div>`;
+    setDefaultDates();
+  } else if(page==='edit'){
+    brand.innerHTML=`<button class="back-btn" onclick="navigateTo('home')" title="Kembali ke Dashboard"><i class="ti ti-arrow-left"></i></button><div><div class="brand-name">Edit Trip</div><div class="brand-sub">Kelola Transaksi</div></div>`;
+    setDefaultEditDates();
+  }
+}
+function goToHome(){ navigateTo('home'); }
+function goToRekap(){ navigateTo('rekap'); }
+function setDefaultDates(){
+  const td=todayStr();
+  document.getElementById('filterDari').value=td;
+  document.getElementById('filterSampai').value=td;
+}
+function setDefaultEditDates(){
+  const td=todayStr();
+  document.getElementById('editFilterDari').value=td;
+  document.getElementById('editFilterSampai').value=td;
+}
+
+// ── Dropdown menu ─────────────────────────────────────────
+function toggleMenu(){
+  const m=document.getElementById('mainMenu');
+  m.classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('mainMenu').classList.remove('open');
+}
+document.addEventListener('click',e=>{
+  const wrap=document.querySelector('.menu-dropdown-wrap');
+  if(wrap && !wrap.contains(e.target)) closeMenu();
+});
+
+// ── Cache & cooldown ─────────────────────────────────────
+const COOLDOWN_MS = 3000;
+let lastFetchKey = null;
+let lastFetchData = null;
+let cooldownUntil = 0;
+let cdInterval = null;
+
+function showToast(sec){
+  const toast=document.getElementById('toastCooldown');
+  const num=document.getElementById('toastCdNum');
+  if(cdInterval) clearInterval(cdInterval);
+  let s=sec;
+  num.textContent=s+'s';
+  toast.classList.add('show');
+  cdInterval=setInterval(()=>{
+    s--;num.textContent=s+'s';
+    if(s<=0){clearInterval(cdInterval);toast.classList.remove('show');}
+  },1000);
+}
+function startCooldown(){
+  cooldownUntil=Date.now()+COOLDOWN_MS;
+  const btns=document.querySelectorAll('.tampilkan-btn');
+  btns.forEach(btn=>{btn.disabled=true;btn.style.opacity='0.45';btn.style.pointerEvents='none';btn.style.cursor='not-allowed';});
+  showToast(Math.ceil(COOLDOWN_MS/1000));
+  setTimeout(()=>{
+    cooldownUntil=0;
+    document.querySelectorAll('.tampilkan-btn').forEach(b=>{b.disabled=false;b.style.opacity='';b.style.pointerEvents='';b.style.cursor='';});
+    if(cdInterval) clearInterval(cdInterval);
+    document.getElementById('toastCooldown').classList.remove('show');
+  }, COOLDOWN_MS);
+}
+
+// ── Tampilkan Rekap ───────────────────────────────────────
+async function tampilkanData(){
+  const dari=document.getElementById('filterDari').value || todayStr();
+  const sampai=document.getElementById('filterSampai').value || todayStr();
+  const jenis=document.getElementById('filterJenis').value;
+  const cacheKey=dari+'|'+sampai;
+  const now=Date.now();
+  if(now < cooldownUntil){ showToast(Math.ceil((cooldownUntil-now)/1000)); if(lastFetchData!==null){renderRekap(jenis==='semua'?lastFetchData:lastFetchData.filter(r=>r.tripType===jenis));} return; }
+  if(cacheKey===lastFetchKey && lastFetchData!==null){ renderRekap(jenis==='semua'?lastFetchData:lastFetchData.filter(r=>r.tripType===jenis)); startCooldown(); return; }
+  const startTs=wibStartTs(dari), endTs=wibEndTs(sampai);
+  const q=query(tripsRef, where('createdAt','>=',startTs), where('createdAt','<=',endTs));
+  setSyncStatus('syncing','Memuat data...');
+  try {
+    const snap=await getDocs(q);
+    const allRecords=snap.docs.map(d=>({id:d.id,...d.data(),createdAt:d.data().createdAt?.toDate()||new Date()})).sort((a,b)=>b.createdAt-a.createdAt);
+    lastFetchKey=cacheKey; lastFetchData=allRecords;
+    renderRekap(jenis==='semua'?allRecords:allRecords.filter(r=>r.tripType===jenis));
+    setSyncStatus('synced','Data dimuat');
+  } catch(err){ setSyncStatus('error','Gagal memuat: '+err.message); return; }
+  startCooldown();
+}
+
+function renderRekap(records){
+  let tAtas=0,tBawah=0,cAtas=0,cBawah=0;
+  records.forEach(r=>{if(r.tripType==='grab_atas'){tAtas+=r.nominal;cAtas++}else{tBawah+=r.nominal;cBawah++}});
+  document.getElementById('sumPendapatan').textContent=formatRupiah(tAtas+tBawah);
+  document.getElementById('sumTotalCount').textContent=records.length+' trip tercatat';
+  document.getElementById('sumAtas').textContent=formatRupiah(tAtas);
+  document.getElementById('sumAtasCount').textContent=cAtas+' trip';
+  document.getElementById('sumBawah').textContent=formatRupiah(tBawah);
+  document.getElementById('sumBawahCount').textContent=cBawah+' trip';
+  const badge=document.getElementById('listCount');
+  if(records.length>0){badge.textContent=records.length+' data';badge.style.display='block'} else badge.style.display='none';
+  const list=document.getElementById('tripList');
+  if(!records.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon"><i class="ti ti-receipt-off"></i></div><div class="empty-title">Belum ada data trip</div><div class="empty-sub">Coba ubah filter atau tambahkan trip baru</div></div>`;return;
+  }
+  list.innerHTML=records.map((r,i)=>{
+    const isAtas=r.tripType==='grab_atas';
+    const tgl=r.createdAt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+    const jam=r.createdAt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    return`<div class="trip-item">
+      <div class="trip-num">${i+1}</div>
+      <div class="trip-icon ${isAtas?'ti-atas':'ti-bawah'}"><i class="ti ${isAtas?'ti-trending-up':'ti-trending-down'}" style="font-size:16px"></i></div>
+      <div class="trip-info">
+        <div class="trip-type-name">${isAtas?'Grab Atas':'Grab Bawah'}<span class="${isAtas?'badge-atas':'badge-bawah'}">${isAtas?'ATAS':'BAWAH'}</span></div>
+        <div class="trip-time">${tgl} · ${jam}</div>
+      </div>
+      <div class="trip-amt">${formatRupiah(r.nominal)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Tampilkan Edit ────────────────────────────────────────
+let editFetchData = null;
+
+async function tampilkanDataEdit(){
+  const dari=document.getElementById('editFilterDari').value || todayStr();
+  const sampai=document.getElementById('editFilterSampai').value || todayStr();
+  const startTs=wibStartTs(dari), endTs=wibEndTs(sampai);
+  const q=query(tripsRef, where('createdAt','>=',startTs), where('createdAt','<=',endTs));
+  setSyncStatus('syncing','Memuat data...');
+  try {
+    const snap=await getDocs(q);
+    editFetchData=snap.docs.map(d=>({id:d.id,...d.data(),createdAt:d.data().createdAt?.toDate()||new Date()})).sort((a,b)=>b.createdAt-a.createdAt);
+    renderEditList(editFetchData);
+    setSyncStatus('synced','Data dimuat');
+  } catch(err){ setSyncStatus('error','Gagal memuat: '+err.message); }
+  startCooldown();
+}
+
+function renderEditList(records){
+  const badge=document.getElementById('editListCount');
+  if(records.length>0){badge.textContent=records.length+' data';badge.style.display='block'} else badge.style.display='none';
+  const list=document.getElementById('editTripList');
+  if(!records.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon"><i class="ti ti-receipt-off"></i></div><div class="empty-title">Belum ada data trip</div><div class="empty-sub">Coba ubah filter tanggal</div></div>`;return;
+  }
+  list.innerHTML=records.map((r,i)=>{
+    const isAtas=r.tripType==='grab_atas';
+    const tgl=r.createdAt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+    const jam=r.createdAt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    return`<div class="trip-item" id="editItem_${r.id}">
+      <div class="trip-num">${i+1}</div>
+      <div class="trip-icon ${isAtas?'ti-atas':'ti-bawah'}"><i class="ti ${isAtas?'ti-trending-up':'ti-trending-down'}" style="font-size:16px"></i></div>
+      <div class="trip-info">
+        <div class="trip-type-name">${isAtas?'Grab Atas':'Grab Bawah'}<span class="${isAtas?'badge-atas':'badge-bawah'}">${isAtas?'ATAS':'BAWAH'}</span></div>
+        <div class="trip-time">${tgl} · ${jam}</div>
+      </div>
+      <div class="trip-amt" id="amt_${r.id}">${formatRupiah(r.nominal)}</div>
+      <div class="trip-actions">
+        <button class="action-btn btn-edit" title="Edit nominal" onclick="openEditModal('${r.id}')">
+          <i class="ti ti-pencil"></i>
+        </button>
+        <button class="action-btn btn-delete" title="Hapus trip" onclick="openDeleteModal('${r.id}')">
+          <i class="ti ti-trash"></i>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Edit Modal ────────────────────────────────────────────
+let currentEditId = null;
+
+function openEditModal(id){
+  currentEditId=id;
+  const r=editFetchData.find(x=>x.id===id);
+  if(!r) return;
+  const isAtas=r.tripType==='grab_atas';
+  const tgl=r.createdAt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('editTripMeta').textContent=(isAtas?'Grab Atas':'Grab Bawah')+' · '+tgl;
+  document.getElementById('editNominalInput').value=r.nominal.toLocaleString('id-ID');
+  document.getElementById('modalEdit').classList.add('show');
+  setTimeout(()=>document.getElementById('editNominalInput').focus(),350);
+}
+function closeEditModal(){
+  document.getElementById('modalEdit').classList.remove('show');
+  currentEditId=null;
+}
+
+async function saveEdit(){
+  if(!currentEditId) return;
+  const newNominal=parseAngka(document.getElementById('editNominalInput').value);
+  if(!newNominal||newNominal<=0){
+    const inp=document.getElementById('editNominalInput');
+    inp.style.borderColor='#ef4444';inp.style.boxShadow='0 0 0 3px rgba(239,68,68,0.15)';
+    setTimeout(()=>{inp.style.borderColor='';inp.style.boxShadow=''},1500);
+    return;
+  }
+  try {
+    await updateDoc(doc(db,'trips',currentEditId),{nominal:newNominal});
+    // Update local caches
+    const idx=editFetchData.findIndex(x=>x.id===currentEditId);
+    if(idx>-1) editFetchData[idx].nominal=newNominal;
+    if(lastFetchData){ const li=lastFetchData.findIndex(x=>x.id===currentEditId); if(li>-1) lastFetchData[li].nominal=newNominal; }
+    // Update DOM in edit list
+    const amtEl=document.getElementById('amt_'+currentEditId);
+    if(amtEl){ amtEl.textContent=formatRupiah(newNominal); amtEl.style.color='var(--green-text)'; setTimeout(()=>amtEl.style.color='',1500); }
+    // Refresh rekap if visible
+    refreshRekapIfVisible();
+    closeEditModal();
+    showToastAction('Nominal berhasil diperbarui','success');
+  } catch(err){ alert('Gagal update: '+err.message); }
+}
+
+// ── Delete Modal ──────────────────────────────────────────
+let currentDeleteId = null;
+
+function openDeleteModal(id){
+  currentDeleteId=id;
+  const r=editFetchData.find(x=>x.id===id);
+  if(!r) return;
+  const isAtas=r.tripType==='grab_atas';
+  const tgl=r.createdAt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('delTripMeta').textContent=(isAtas?'Grab Atas':'Grab Bawah')+' · '+tgl+' · '+formatRupiah(r.nominal);
+  document.getElementById('modalConfirmDel').classList.add('show');
+}
+function closeDeleteModal(){
+  document.getElementById('modalConfirmDel').classList.remove('show');
+  currentDeleteId=null;
+}
+
+async function confirmDelete(){
+  if(!currentDeleteId) return;
+  try {
+    await deleteDoc(doc(db,'trips',currentDeleteId));
+    // Remove from caches
+    editFetchData=editFetchData.filter(x=>x.id!==currentDeleteId);
+    if(lastFetchData) lastFetchData=lastFetchData.filter(x=>x.id!==currentDeleteId);
+    // Remove from DOM with animation
+    const itemEl=document.getElementById('editItem_'+currentDeleteId);
+    if(itemEl){ itemEl.style.transition='all 0.3s'; itemEl.style.opacity='0'; itemEl.style.transform='translateX(30px)'; setTimeout(()=>itemEl.remove(),320); }
+    // Refresh rekap if visible
+    refreshRekapIfVisible();
+    closeDeleteModal();
+    showToastAction('Trip berhasil dihapus','danger');
+    // Re-render edit list to fix numbering
+    setTimeout(()=>renderEditList(editFetchData),350);
+  } catch(err){ alert('Gagal hapus: '+err.message); }
+}
+
+// ── Refresh rekap page jika sedang ditampilkan ────────────
+function refreshRekapIfVisible(){
+  if(document.getElementById('rekapPage').classList.contains('active') && lastFetchData!==null){
+    const jenis=document.getElementById('filterJenis').value;
+    const filtered=jenis==='semua'?lastFetchData:lastFetchData.filter(r=>r.tripType===jenis);
+    renderRekap(filtered);
+  }
+}
+
+// ── Expose globals ─────────────────────────────────────────
+window.submitTrip=submitTrip;
+window.goToRekap=goToRekap;
+window.goToHome=goToHome;
+window.tampilkanData=tampilkanData;
+window.tampilkanDataEdit=tampilkanDataEdit;
+window.formatInput=formatInput;
+window.addQuick=addQuick;
+window.toggleMenu=toggleMenu;
+window.navigateTo=navigateTo;
+window.openEditModal=openEditModal;
+window.closeEditModal=closeEditModal;
+window.saveEdit=saveEdit;
+window.openDeleteModal=openDeleteModal;
+window.closeDeleteModal=closeDeleteModal;
+window.confirmDelete=confirmDelete;
+</script>
+</body>
+</html>
